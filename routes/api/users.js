@@ -7,6 +7,13 @@ const jwt = require('jsonwebtoken');
 const keys = require('../../config/keys');
 const passport = require('passport');
 
+  
+
+//Load input valdation
+const validateRegisterInput = require('../../validation/register');
+const validateLoginInput = require('../../validation/login');
+
+
 //Route api/users/test 
 //Method: GET
 //Desc: test the route
@@ -18,12 +25,19 @@ router.get('/test', (req,res) => res.json({msg:"Users works!!"}));
 //Desc: test the route
 //Access: public
 router.post('/register', (req,res) => {
+    const {errors, isValid} = validateRegisterInput(req.body);
+    if(!isValid){
+        //check validation
+        return res.status(400).json(errors);
+    }//end if
+
     User.findOne({ 
         email: req.body.email 
     })
     .then(user => {
         if(user){
-            return res.status(400).json({email: "email already registered"});
+            errors.email = 'Email already exists';
+            return res.status(400).json(errors);
         }//end if 
         else {
 
@@ -59,6 +73,11 @@ router.post('/register', (req,res) => {
 //Desc: login for users
 //Access: public
 router.post('/login', (req, res)=>{
+    const {errors, isValid} = validateLoginInput(req.body);
+    if(!isValid){
+        //check validation
+        return res.status(400).json(errors);
+    }//end if
     const email = req.body.email;
     const password = req.body.password;
 
@@ -67,7 +86,8 @@ router.post('/login', (req, res)=>{
     .then(user => {
         //check for user
         if(!user){
-            return res.status(404).json({email:"User not found"});
+            errors.email = "User not found";
+            return res.status(404).json(errors);
         }//end if
         //check submitted password
         bcrypt.compare(password, user.password)
@@ -91,7 +111,8 @@ router.post('/login', (req, res)=>{
                 })//end jwt.sign()
             }//end if(isMatch) 
             else{
-                return res.status(400).json({password:'Password wrong'});
+                errors.password = "Password incorrect";
+                return res.status(400).json(errors);
             }//end else
         })//end compare.then()
     })//end findOne.then()
