@@ -1,7 +1,7 @@
 {
-  "name": "socialnet-js",
+  "name": "socialnet",
   "version": "1.0.0",
-  "description": "",
+  "description": "React Redux Social Network",
   "main": "server.js",
   "scripts": {
     "client-install": "npm install --prefix mern-client",
@@ -33,5 +33,13 @@
   "devDependencies": {
     "concurrently": "^4.0.1",
     "nodemon": "^1.18.4"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/paddypopeye/devnetsocial.git"
+  },
+  "bugs": {
+    "url": "https://github.com/paddypopeye/devnetsocial/issues"
+  },
+  "homepage": "https://github.com/paddypopeye/devnetsocial#readme"
 }

@@ -59,6 +59,7 @@ class CreateProfile extends Component{
             profile.facebook  = !isEmpty(profile.social.facebook || profile.social.instagram === {}) ? profile.social.facebook : {};
             profile.instagram  = !isEmpty(profile.social.instagram || profile.social.instagram === {} ) ? profile.social.instagram : {};
             profile.youtube  = !isEmpty(profile.social.youtube || profile.social.instagram === {} ) ? profile.social.youtube : {};
+            profile.linkedin  = !isEmpty(profile.social.linkedin || profile.social.instagram === {} ) ? profile.social.linkedin : {};
             
             //set the component state for the fields
             this.setState({
