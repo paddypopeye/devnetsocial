@@ -8,10 +8,10 @@ const Profile = require('../../models/Profile');
 //Load Validation
 const validateProfileInput = require('../../validation/profile');
 const validateExperienceInput = require('../../validation/experience');
+const validateEducationInput = require('../../validation/education');
 
-//Route api/profile/profile
+//Route GET api/profile/profile
 //Desc: get current user's profile
-//Method: GET
 //Access: private
 router.get('/', passport.authenticate('jwt',{session:false}), (req,res) =>{
     const errors = {}; 
@@ -26,9 +26,8 @@ router.get('/', passport.authenticate('jwt',{session:false}), (req,res) =>{
     .catch(err => res.status(401).json(err));
 })//end get('/')
 
-//Route api/profile/all
+//Route  GET api/profile/all
 //Desc: get all profiles
-//Method: GET
 //Access: public
 router.get('/all', (req,res) =>{
     const errors = {}; 
@@ -42,9 +41,8 @@ router.get('/all', (req,res) =>{
     }).catch(err => res.status(401).json(err + "No profiles"));
 })//end get('/')
 
-//Route api/profile/handle/:handle
+//Route GET api/profile/handle/:handle
 //Desc: Get profile by handle
-//Method: GET
 //Access: public
 router.get('/handle/:handle', (req,res)=>{
     const errors = {};
@@ -60,10 +58,8 @@ router.get('/handle/:handle', (req,res)=>{
     }).catch(err => res.status(404).json()); //end profile=>{}
 })//end get
 
-
-//Route api/profile/user/:user_id
+//Route GET api/profile/user/:user_id
 //Desc: Get profile by user id
-//Method: GET
 //Access: public
 router.get('/user/:user_id', (req,res)=>{
     const errors = {};
@@ -78,9 +74,8 @@ router.get('/user/:user_id', (req,res)=>{
     }).catch(err => res.status(404).json(err)); //end profile=>{}
 })//end get
 
-//Route api/profile/profile
+//Route POST api/profile/profile
 //Desc: Create or update user profile
-//Method: POST
 //Access: private
 router.post('/',
     passport.authenticate('jwt',{session:false}),
@@ -108,11 +103,12 @@ router.post('/',
 
     //Social
     profileFields.social = {};
+    if(req.body.linkedin) profileFields.social.linkedin = req.body.linkedin;
     if(req.body.youtube) profileFields.social.youtube = req.body.youtube;
     if(req.body.twitter) profileFields.social.twitter = req.body.twitter;
-    if(req.body.instagram) profileFields.instagram = req.body.instagram;
-    if(req.body.facebook) profileFields.facebook = req.body.facebook;
-    if(req.body.linkedin) profileFields.linkedin = req.body.linkedin;
+    if(req.body.instagram) profileFields.social.instagram = req.body.instagram;
+    if(req.body.facebook) profileFields.social.facebook = req.body.facebook;
+    
 
     Profile.findOne({user: req.user.id})
     .then(profile =>{
@@ -138,9 +134,8 @@ router.post('/',
     })//end then
 })//end post('api/profile/profile')
 
-//Route api/profile/experience
+//Route POST api/profile/experience
 //Desc: Add experience to profile
-//Method: POST
 //Access: private
 router.post('/experience', passport.authenticate('jwt',{session:false}), (req,res)=>{
     const {errors, isValid} = validateExperienceInput(req.body);
@@ -169,9 +164,8 @@ router.post('/experience', passport.authenticate('jwt',{session:false}), (req,re
     }).catch(err => res.status(404).json(err)); //end profile=>{}
 })//end post  api/profile/experiece
 
-//Route api/profile/education
+//Route POST api/profile/education
 //Desc: Add education to profile
-//Method: POST
 //Access: private
 router.post('/education', passport.authenticate('jwt',{session:false}), (req,res)=>{
     const {errors, isValid} = validateEducationInput(req.body);
@@ -198,26 +192,24 @@ router.post('/education', passport.authenticate('jwt',{session:false}), (req,res
     }).catch(err => res.status(404).json(err)); //end profile=>{}
 })//end post api/profile/education
 
-//Route api/profile/experience/:exp_id
+//Route DELETE api/profile/experience/:edu_id
 //Desc: Delete experience from profile
-//Method: DELETE
 //Access: private
 router.delete('/experience/:exp_id', passport.authenticate('jwt',{session:false}), (req,res)=>{
     Profile.findOne({ user: req.user.id })
     .then(profile => {
         const removeIndedx = profile.experience
         .map(item => item.id)
-        .indexOf(req.params.exp_id);
+        .indexOf(req.params.edu_id);
         //Splice out of array
-        profile.experiene.splice(removeIndedx,1);
+        profile.experience.splice(removeIndedx,1);
         //Save the profile
         profile.save().then(profile => res.json(profile));
         }).catch(err => res.status(404).json(err)); //end profile=>{}
 });//end delete experience
 
-//Route api/profile/education/:edu_id
+//Route DELETE api/profile/education/:edu_id
 //Desc: Delete education from profile
-//Method: DELETE
 //Access: private
 router.delete('/education/:edu_id', passport.authenticate('jwt',{session:false}), (req,res)=>{
     Profile.findOne({ user: req.user.id })
@@ -232,14 +224,16 @@ router.delete('/education/:edu_id', passport.authenticate('jwt',{session:false})
         }).catch(err => res.status(404).json(err)); //end profile=>{}
 });//end delete education
 
-//Route api/profile
+//Route DELETE api/profile
 //Desc: Delete a profile
-//Method: DELETE
 //Access: private
-router.delete('/', passport.authenticate('jwt',{session:false}), (req,res)=>{
-    Profile.findOneAndRemove({ user: req.user.id })
-    .then(() => {
-        res.json({success:true})
-    }).catch(err => res.status(404).json(err)); //end profile=>{}
-});//end delete profile
+router.delete('/',passport.authenticate('jwt', { session: false }),
+    (req, res) => {
+      Profile.findOneAndRemove({ user: req.user.id })
+      .then(() => { User.findOneAndRemove({ _id: req.user.id })
+        .then(() =>res.json({ success: true }));
+      });
+    }//end object
+  );//end delete profile
+
 module.exports=router;
