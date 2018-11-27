@@ -48,7 +48,7 @@ class Login extends Component{
     render(){
         const { errors } = this.state;
         return(
-        <div className='landing'>
+        <div className='login'>
             <div className="login">
                 <div className="container">
                   <div className="row">

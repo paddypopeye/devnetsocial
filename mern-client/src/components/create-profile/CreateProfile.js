@@ -72,7 +72,7 @@ class CreateProfile extends Component{
 
         if(displaySocialNets){
             socialInputs = (
-                <div>
+                < div >
                     <InputGroup
                         placeholder= "Twitter URL"
                         name="twitter"

@@ -56,6 +56,7 @@ class Register extends Component{
     render(){
       const {errors} = this.state;
       return(
+    <div className="signup">
     <div className="register">
         <div className="container">
             <div className="row">
@@ -100,6 +101,7 @@ class Register extends Component{
                 </div>
             </div>
         </div>
+  </div>
   </div>
         )//end return
     }//end render
