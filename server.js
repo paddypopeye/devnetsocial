@@ -39,6 +39,7 @@ if (process.env.NODE_ENV === 'production')
     app.use(express.static('mern-client/build'))
 }//end if 
 else {
+    
 app.get('*', (req,res) =>{
     res.sendFile(path.resolve(__dirname, 'mern-client', 'Build', 'index.html'));
     })//end get() 
