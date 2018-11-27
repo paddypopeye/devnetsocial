@@ -4,3 +4,4 @@ package-lock.json
 /devconnector_theme/
 /devconnector_theme
 /config/keys_dev.js
+*.txt
