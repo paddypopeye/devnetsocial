@@ -41,7 +41,7 @@ if (process.env.NODE_ENV === 'production')
 else {
 app.get('*', (req,res) =>{
     res.sendFile(path.resolve(__dirname, 'mern-client', 'Build', 'index.html'));
-    })//end get()
+    })//end get() 
 }//end else
 
 const port = process.env.PORT || 5000
