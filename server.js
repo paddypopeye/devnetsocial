@@ -41,7 +41,7 @@ if (process.env.NODE_ENV === 'production')
 else {
     
 app.get('*', (req,res) =>{
-    res.sendFile(path.resolve(__dirname, 'mern-client', 'Build', 'index.html'));
+    res.sendFile(path.resolve(__dirname, 'mern-client', 'build', 'index.html'));
     })//end get() 
 }//end else
 
